@@ -60,7 +60,7 @@ namespace Grand.Web.Models.Catalog
             public string Price {get;set;}
             public decimal PriceValue { get; set; }
             public string RewardPoints { get; set; }
-            public int RewardPointsValue { get; set; }
+            //public int RewardPointsValue { get; set; }
             public string StartPrice { get; set; }
             public decimal StartPriceValue { get; set; }
             public string HighestBid { get; set; }
