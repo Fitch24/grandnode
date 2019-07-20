@@ -161,6 +161,8 @@ namespace Grand.Web.Models.Catalog
             public string Price { get; set; }
             public string PriceWithDiscount { get; set; }
             public decimal PriceValue { get; set; }
+            public string RewardPoints { get; set; }
+            public int RewardPointsValue { get; set; }
             public bool CustomerEntersPrice { get; set; }
             public bool CallForPrice { get; set; }
             public string ProductId { get; set; }

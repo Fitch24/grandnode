@@ -54,5 +54,10 @@ namespace Grand.Core.Domain.Customers
         /// Gets or sets a value indicating whether all reward points are accumulated in one balance for all stores and they can be used in any store. Otherwise, each store has its own rewards points and they can only be used in that store.
         /// </summary>
         public bool PointsAccumulatedForAllStores { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether reward points will be awarded for all purchases and calculated based on the total amount of money spent
+        /// </summary>
+        public bool AwardForAllPurchases { get; set; }
     }
 }

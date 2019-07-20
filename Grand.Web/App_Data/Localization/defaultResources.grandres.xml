@@ -20166,4 +20166,14 @@
   <LocaleResource Name="pushnotifications.message.fields.text">
     <Value>Message content</Value>
   </LocaleResource>
+  
+  <LocaleResource Name="Admin.Catalog.Product.Fields.RewardPoints">
+    <Value>Reward Points</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Product.Fields.AllowToEarnRewardPoints">
+    <Value>Allow earning Reward Points</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.RewardPoints.AwardForAllPurchases">
+    <Value>Award for all purchases</Value>
+  </LocaleResource>
 </Language>

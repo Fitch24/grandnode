@@ -117,7 +117,16 @@ namespace Grand.Services.Orders
         /// </summary>
         /// <param name="customer">Customer</param>
         /// <param name="amount">Amount (in primary store currency)</param>
-        /// <returns>umber of reward points</returns>
+        /// <returns>Number of reward points</returns>
         int CalculateRewardPoints(Customer customer, decimal amount);
+
+        /// <summary>
+        /// Calculate how much reward points will be earned/reduced based on products in a shopping cart
+        /// (if "Award for all purchases" not checked in reward points settings)
+        /// </summary>
+        /// <param name="customer">Customer</param>
+        /// <param name="cart">Shopping cart dictionary where "Key" is ProductId and "Value" is Quantity</param>
+        /// <returns>Number of reward points</returns>
+        Task<int> CalculateRewardPoints(Customer customer, IDictionary<string, int> cart);
     }
 }

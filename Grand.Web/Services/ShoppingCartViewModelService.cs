@@ -1066,16 +1066,24 @@ namespace Grand.Web.Services
 
                 //reward points to be earned
                 if (_rewardPointsSettings.Enabled &&
-                    _rewardPointsSettings.DisplayHowMuchWillBeEarned &&
-                    shoppingCartTotalBase.HasValue)
+                    _rewardPointsSettings.DisplayHowMuchWillBeEarned)
                 {
-                    decimal? shippingBaseInclTax = model.RequiresShipping
-                        ? (await _orderTotalCalculationService.GetShoppingCartShippingTotal(cart, true)).shoppingCartShippingTotal
-                        : 0;
-                    var earnRewardPoints = shoppingCartTotalBase.Value - shippingBaseInclTax.Value;
-                    if (earnRewardPoints > 0)
-                        model.WillEarnRewardPoints = _orderTotalCalculationService
-                            .CalculateRewardPoints(customer, earnRewardPoints);
+                    if (_rewardPointsSettings.AwardForAllPurchases && shoppingCartTotalBase.HasValue)
+                    {
+                        decimal? shippingBaseInclTax = model.RequiresShipping
+                            ? (await _orderTotalCalculationService.GetShoppingCartShippingTotal(cart, true)).shoppingCartShippingTotal
+                            : 0;
+                        var earnRewardPoints = shoppingCartTotalBase.Value - shippingBaseInclTax.Value;
+                        if (earnRewardPoints > 0)
+                            model.WillEarnRewardPoints = _orderTotalCalculationService
+                                .CalculateRewardPoints(customer, earnRewardPoints);
+                    }
+                    else
+                    {
+                        var productsInCart = cart
+                            .ToDictionary(x => x.ProductId, x => x.Quantity);
+                        model.WillEarnRewardPoints = await _orderTotalCalculationService.CalculateRewardPoints(customer, productsInCart);
+                    }
                 }
 
             }

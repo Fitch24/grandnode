@@ -296,6 +296,12 @@ namespace Grand.Web.Areas.Admin.Models.Catalog
         [GrandResourceDisplayName("Admin.Catalog.Products.Fields.ProductCost")]
         public decimal ProductCost { get; set; }
 
+        [GrandResourceDisplayName("Admin.Catalog.Product.Fields.AllowToEarnRewardPoints")]
+        public bool AllowToEarnRewardPoints { get; set; }
+
+        [GrandResourceDisplayName("Admin.Catalog.Product.Fields.RewardPoints")]
+        public int RewardPoints { get; set; }
+
         [GrandResourceDisplayName("Admin.Catalog.Products.Fields.CustomerEntersPrice")]
         public bool CustomerEntersPrice { get; set; }
 

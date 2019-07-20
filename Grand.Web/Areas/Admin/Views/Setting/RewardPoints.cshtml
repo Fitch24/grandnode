@@ -46,7 +46,7 @@
                                 <div class="col-xs-4 col-md-8 col-sm-8">
                                     <label class="mt-checkbox mt-checkbox-outline control control-checkbox">
                                         <admin-input asp-for="Enabled" />
-                                         <div class="control__indicator"></div>
+                                        <div class="control__indicator"></div>
                                     </label>
                                     <span asp-validation-for="Enabled"></span>
                                 </div>
@@ -89,6 +89,19 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <div class="col-xs-8 col-md-4 col-sm-4 text-right">
+                                    @Html.OverrideStoreCheckboxFor(model => model.AwardForAllPurchases_OverrideForStore, model => model.AwardForAllPurchases, Model.ActiveStoreScopeConfiguration)
+                                    <admin-label asp-for="AwardForAllPurchases" class="control-label" />
+                                </div>
+                                <div class="col-xs-4 col-md-8 col-sm-8">
+                                    <label class="mt-checkbox mt-checkbox-outline control control-checkbox">
+                                        <admin-input asp-for="AwardForAllPurchases" />
+                                        <div class="control__indicator"></div>
+                                    </label>
+                                    <span asp-validation-for="AwardForAllPurchases"></span>
+                                </div>
+                            </div>
+                            <div class="form-group" id="pointsForPurchase">
                                 <div class="col-xs-8 col-md-4 col-sm-4 text-right">
                                     @Html.OverrideStoreCheckboxFor(model => model.PointsForPurchases_OverrideForStore, model => model.PointsForPurchases_Amount, model => model.PointsForPurchases_Points, Model.ActiveStoreScopeConfiguration)
                                     <admin-label asp-for="PointsForPurchases_Amount" class="control-label" />
@@ -133,7 +146,7 @@
                                 <div class="col-xs-4 col-md-8 col-sm-8">
                                     <label class="mt-checkbox mt-checkbox-outline control control-checkbox">
                                         <admin-input asp-for="DisplayHowMuchWillBeEarned" />
-                                         <div class="control__indicator"></div>
+                                        <div class="control__indicator"></div>
                                     </label>
                                     <span asp-validation-for="DisplayHowMuchWillBeEarned"></span>
                                 </div>
@@ -145,7 +158,7 @@
                                 <div class="col-xs-4 col-md-8 col-sm-8">
                                     <label class="mt-checkbox mt-checkbox-outline control control-checkbox">
                                         <admin-input asp-for="PointsAccumulatedForAllStores" />
-                                         <div class="control__indicator"></div>
+                                        <div class="control__indicator"></div>
                                     </label>
                                     <span asp-validation-for="PointsAccumulatedForAllStores"></span>
                                 </div>
@@ -158,3 +171,16 @@
         </div>
     </div>
 </form>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#@Html.FieldIdFor(model => model.AwardForAllPurchases)').change(toggleAwardForAllPurchases);
+        toggleAwardForAllPurchases();
+    });
+    function toggleAwardForAllPurchases() {
+        if ($('#@Html.FieldIdFor(model => model.AwardForAllPurchases)').is(':checked')) {
+            $('#pointsForPurchase').show();
+        } else {
+            $('#pointsForPurchase').hide();
+        }
+    };
+</script>

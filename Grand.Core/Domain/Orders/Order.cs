@@ -195,9 +195,9 @@ namespace Grand.Core.Domain.Orders
         public decimal RefundedAmount { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating whether reward points were earned for this order
+        /// Gets or sets the entry of earned reward points for this order
         /// </summary>
-        public bool RewardPointsWereAdded { get; set; }
+        public RewardPointsHistory AddedRewardPointsEntry { get; set; }
         
         /// <summary>
         /// Gets or sets the checkout attribute description

@@ -401,6 +401,16 @@ namespace Grand.Core.Domain.Catalog
         public decimal ProductCost { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether a customer can earn Reward Points for purchasing the product
+        /// </summary>
+        public bool AllowToEarnRewardPoints { get; set; }
+
+        /// <summary>
+        /// Gets or sets a specific reward points value for purchasing the product
+        /// </summary>
+        public int RewardPoints { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether a customer enters price
         /// </summary>
         public bool CustomerEntersPrice { get; set; }

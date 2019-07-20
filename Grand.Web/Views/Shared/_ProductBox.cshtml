@@ -3,7 +3,7 @@
     //prepare "Add to cart" AJAX link
     string addtocartlink = "";
     string addtowishlistlink = "";
-    string quickviewurl = Url.RouteUrl("QuickView-Product", new { productId = Model.Id }); 
+    string quickviewurl = Url.RouteUrl("QuickView-Product", new { productId = Model.Id });
 
     var shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart;
     var quantity = 1;
@@ -27,9 +27,9 @@
         }
         else
         {
-            addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId});
+            addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId });
         }
-        addtowishlistlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = (int)ShoppingCartType.Wishlist});
+        addtowishlistlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = (int)ShoppingCartType.Wishlist });
     }
     var addtocomparelink = Url.RouteUrl("AddProductToCompare", new { productId = Model.Id });
 }
@@ -43,23 +43,7 @@
                  </text> } />
         </picture>
     </a>
-    @if (!String.IsNullOrEmpty(Model.ProductPrice.OldPrice))
-    {
-        @if (!string.IsNullOrEmpty(Model.Flag))
-        {
-            <span class="new-product-label with-promo bg-info text-white">@Model.Flag</span>
-        }
-        <span class="change-percent bg-success text-white">
-            <span>-@(Convert.ToInt32((1 - Model.ProductPrice.PriceValue / Model.ProductPrice.OldPriceValue) * 100))%</span>
-        </span>
-    }
-    else
-    {
-        @if (!string.IsNullOrEmpty(Model.Flag))
-        {
-            <span class="new-product-label bg-info text-white">@Model.Flag</span>
-        }
-    }
+    <partial name="_ProductOverviewLabels" model="Model" />
     <div class="card-body p-0">
         <div class="card-buttons">
             <div class="btn-group">

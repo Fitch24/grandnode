@@ -81,6 +81,7 @@ namespace Grand.Web.Services
         private readonly CustomerSettings _customerSettings;
         private readonly CaptchaSettings _captchaSettings;
         private readonly LocalizationSettings _localizationSettings;
+        private readonly RewardPointsSettings _rewardPointsSettings;
 
         public ProductViewModelService(IPermissionService permissionService, IWorkContext workContext, IStoreContext storeContext,
             ILocalizationService localizationService, IProductService productService, IPriceCalculationService priceCalculationService,
@@ -92,7 +93,7 @@ namespace Grand.Web.Services
             IDateTimeHelper dateTimeHelper, IDownloadService downloadService, IWorkflowMessageService workflowMessageService, IProductReservationService productReservationService,
             IServiceProvider serviceProvider,
             MediaSettings mediaSettings, CatalogSettings catalogSettings, SeoSettings seoSettings, VendorSettings vendorSettings, CustomerSettings customerSettings,
-            CaptchaSettings captchaSettings, LocalizationSettings localizationSettings)
+            CaptchaSettings captchaSettings, LocalizationSettings localizationSettings, RewardPointsSettings rewardPointsSettings)
         {
             this._permissionService = permissionService;
             this._workContext = workContext;
@@ -130,6 +131,7 @@ namespace Grand.Web.Services
             this._customerSettings = customerSettings;
             this._captchaSettings = captchaSettings;
             this._localizationSettings = localizationSettings;
+            this._rewardPointsSettings = rewardPointsSettings;
         }
 
         public virtual async Task<IEnumerable<ProductOverviewModel>> PrepareProductOverviewModels(
@@ -349,6 +351,17 @@ namespace Grand.Web.Services
                                         }
                                         else
                                         {
+                                            //reward points
+                                            if (_rewardPointsSettings.Enabled &&
+                                                _rewardPointsSettings.DisplayHowMuchWillBeEarned &&
+                                                !_rewardPointsSettings.AwardForAllPurchases &&
+                                                product.AllowToEarnRewardPoints &&
+                                                product.RewardPoints > 0)
+                                            {
+                                                priceModel.RewardPoints =
+                                                    string.Format(_localizationService.GetResource("Products.RewardPoints"), product.RewardPoints);
+                                            }
+
                                             //prices
 
                                             //calculate for the maximum quantity (in case if we have tier prices)
@@ -886,6 +899,18 @@ namespace Grand.Web.Services
                     }
                     else
                     {
+                        //reward points
+                        //reward points
+                        if (_rewardPointsSettings.Enabled &&
+                            _rewardPointsSettings.DisplayHowMuchWillBeEarned &&
+                            !_rewardPointsSettings.AwardForAllPurchases &&
+                            product.AllowToEarnRewardPoints &&
+                            product.RewardPoints > 0)
+                        {
+                            model.ProductPrice.RewardPoints =
+                                string.Format(_localizationService.GetResource("Products.RewardPoints"), product.RewardPoints);
+                        }
+
                         var productprice = await _taxService.GetProductPrice(product, product.OldPrice);
                         decimal taxRate = productprice.taxRate;
                         decimal oldPriceBase = productprice.productprice;

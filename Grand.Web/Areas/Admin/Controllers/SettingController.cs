@@ -1551,6 +1551,7 @@ namespace Grand.Web.Areas.Admin.Controllers
                 model.PointsForPurchases_Canceled_OverrideForStore = _settingService.SettingExists(rewardPointsSettings, x => x.PointsForPurchases_Canceled, storeScope);
                 model.DisplayHowMuchWillBeEarned_OverrideForStore = _settingService.SettingExists(rewardPointsSettings, x => x.DisplayHowMuchWillBeEarned, storeScope);
                 model.PointsForRegistration_OverrideForStore = _settingService.SettingExists(rewardPointsSettings, x => x.PointsForRegistration, storeScope);
+                model.AwardForAllPurchases_OverrideForStore = _settingService.SettingExists(rewardPointsSettings, x => x.AwardForAllPurchases, storeScope);
             }
             var currencySettings = _settingService.LoadSetting<CurrencySettings>(storeScope);
             model.PrimaryStoreCurrencyCode = (await _currencyService.GetCurrencyById(currencySettings.PrimaryStoreCurrencyId)).CurrencyCode;
@@ -1615,6 +1616,11 @@ namespace Grand.Web.Areas.Admin.Controllers
                     await _settingService.SaveSetting(rewardPointsSettings, x => x.DisplayHowMuchWillBeEarned, storeScope, false);
                 else if (!String.IsNullOrEmpty(storeScope))
                     await _settingService.DeleteSetting(rewardPointsSettings, x => x.DisplayHowMuchWillBeEarned, storeScope);
+
+                if (model.AwardForAllPurchases_OverrideForStore || storeScope == "")
+                    await _settingService.SaveSetting(rewardPointsSettings, x => x.AwardForAllPurchases, storeScope, false);
+                else if (!String.IsNullOrEmpty(storeScope))
+                    await _settingService.DeleteSetting(rewardPointsSettings, x => x.AwardForAllPurchases, storeScope);
 
                 await _settingService.SaveSetting(rewardPointsSettings, x => x.PointsAccumulatedForAllStores, "", false);
 

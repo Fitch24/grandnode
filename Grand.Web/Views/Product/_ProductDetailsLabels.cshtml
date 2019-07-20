@@ -1,0 +1,13 @@
+﻿@model ProductDetailsModel
+@if (!String.IsNullOrEmpty(Model.ProductPrice.RewardPoints))
+{
+    <span class="reward-label bg-danger text-white">@Model.ProductPrice.RewardPoints</span>
+    @if (!string.IsNullOrEmpty(Model.Flag))
+    {
+        <span class="new-product-label with-promo bg-info text-white">@Model.Flag</span>
+    }
+}
+else if (!string.IsNullOrEmpty(Model.Flag))
+{
+    <span class="new-product-label bg-info text-white">@Model.Flag</span>
+}

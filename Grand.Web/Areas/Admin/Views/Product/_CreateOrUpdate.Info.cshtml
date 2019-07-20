@@ -20,6 +20,7 @@
         $("#@Html.FieldIdFor(model => model.RequireOtherProducts)").click(toggleRequireOtherProducts);
         $("#@Html.FieldIdFor(model => model.AvailableForPreOrder)").click(togglePreOrder);
         $("#@Html.FieldIdFor(model => model.IsGiftCard)").click(toggleGiftCard);
+        $("#@Html.FieldIdFor(model => model.AllowToEarnRewardPoints)").change(toggleAllowToEarnRewardPoints);
         $("#@Html.FieldIdFor(model => model.CustomerEntersPrice)").click(toggleCustomerEntersPrice);
         $("#@Html.FieldIdFor(model => model.BasepriceEnabled)").click(toggleBasepriceEnabled);
         $("#@Html.FieldIdFor(model => model.IsDownload)").click(toggleDownloadableProduct);
@@ -43,6 +44,7 @@
         togglePreOrder();
         toggleRequireOtherProducts();
         toggleGiftCard();
+        toggleAllowToEarnRewardPoints();
         toggleCustomerEntersPrice();
         toggleBasepriceEnabled();
         toggleDownloadableProduct();
@@ -173,6 +175,14 @@
         } else {
             $('#pnlGiftCardType').hide();
             $('#pnlOverriddenGiftCardAmount').hide();
+        }
+    }
+
+    function toggleAllowToEarnRewardPoints() {
+        if ($('#@Html.FieldIdFor(model => model.AllowToEarnRewardPoints)').is(':checked')) {
+            $('#pnlRewardPoints').show();
+        } else {
+            $('#pnlRewardPoints').hide();
         }
     }
 

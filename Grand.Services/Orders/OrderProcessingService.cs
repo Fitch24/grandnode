@@ -207,7 +207,7 @@ namespace Grand.Services.Orders
             details.CustomerCurrencyCode = details.InitialOrder.CustomerCurrencyCode;
             details.CustomerCurrencyRate = details.InitialOrder.CurrencyRate;
             details.CustomerLanguage = await _languageService.GetLanguageById(details.InitialOrder.CustomerLanguageId);
-            
+
             if (details.InitialOrder.BillingAddress == null)
                 throw new GrandException("Billing address is not available");
 
@@ -961,7 +961,7 @@ namespace Grand.Services.Orders
 
             //insert order
             await _orderService.InsertOrder(order);
-            
+
             var reserved = await _productReservationService.GetCustomerReservationsHelpers();
             foreach (var res in reserved)
             {
@@ -1170,38 +1170,61 @@ namespace Grand.Services.Orders
         {
             var customer = await _customerService.GetCustomerById(order.CustomerId);
 
-            int points = _orderTotalCalculationService.CalculateRewardPoints(customer, order.OrderTotal - order.OrderShippingInclTax);
+            var points = 0;
+            if (_rewardPointsSettings.AwardForAllPurchases)
+                points = _orderTotalCalculationService.CalculateRewardPoints(customer, order.OrderTotal - order.OrderShippingInclTax);
+            else
+            {
+                var products = order
+                    .OrderItems
+                    .ToDictionary(x => x.ProductId, x => x.Quantity);
+                points = await _orderTotalCalculationService.CalculateRewardPoints(customer, products);
+            }
             if (points <= 0)
                 return;
 
             //Ensure that reward points were not added before. We should not add reward points if they were already earned for this order
-            if (order.RewardPointsWereAdded)
+            if (order.AddedRewardPointsEntry != null)
                 return;
 
             //add reward points
-            await _rewardPointsService.AddRewardPointsHistory(customer.Id, points, order.StoreId, string.Format(_localizationService.GetResource("RewardPoints.Message.EarnedForOrder"), order.OrderNumber));
+            order.AddedRewardPointsEntry =
+                await _rewardPointsService.AddRewardPointsHistory(customer.Id,
+                points, order.StoreId,
+                string.Format(_localizationService.GetResource("RewardPoints.Message.EarnedForOrder"), order.OrderNumber),
+                order.Id);
+            await _orderService.UpdateOrder(order);
 
         }
 
         /// <summary>
-        /// Award reward points
+        /// Reduce reward points
         /// </summary>
         /// <param name="order">Order</param>
         protected virtual async Task ReduceRewardPoints(Order order)
         {
             var customer = await _customerService.GetCustomerById(order.CustomerId);
-            int points = _orderTotalCalculationService.CalculateRewardPoints(customer, order.OrderTotal - order.OrderShippingInclTax);
-            if (points <= 0)
-                return;
+            //int points = _orderTotalCalculationService.CalculateRewardPoints(customer, order.OrderTotal - order.OrderShippingInclTax);
+            //if (points <= 0)
+            //    return;
 
             //ensure that reward points were already earned for this order before
-            if (!order.RewardPointsWereAdded)
+            if (order.AddedRewardPointsEntry == null)
                 return;
 
-            //reduce reward points
-            await _rewardPointsService.AddRewardPointsHistory(customer.Id, -points, order.StoreId,
-                string.Format(_localizationService.GetResource("RewardPoints.Message.ReducedForOrder"), order.OrderNumber));
+            var points = order.AddedRewardPointsEntry.Points;
+            //if (points <= 0)
+            //    return;
 
+            //reduce reward points
+            await _rewardPointsService.AddRewardPointsHistory(
+                customer.Id,
+                -points,
+                order.StoreId,
+                string.Format(_localizationService.GetResource("RewardPoints.Message.ReducedForOrder"),
+                order.OrderNumber),
+                order.Id);
+            order.AddedRewardPointsEntry = null;
             await _orderService.UpdateOrder(order);
         }
 
@@ -1217,8 +1240,8 @@ namespace Grand.Services.Orders
 
             //return back
             await _rewardPointsService.AddRewardPointsHistory(order.CustomerId, -order.RedeemedRewardPointsEntry.Points, order.StoreId,
-                string.Format(_localizationService.GetResource("RewardPoints.Message.ReturnedForOrder"), order.OrderNumber));
-
+                string.Format(_localizationService.GetResource("RewardPoints.Message.ReturnedForOrder"), order.OrderNumber), order.Id);
+            order.RedeemedRewardPointsEntry = null;
             await _orderService.UpdateOrder(order);
         }
 
@@ -1706,7 +1729,7 @@ namespace Grand.Services.Orders
                     else
                     {
                         result.PlacedOrder = await SaveOrderDetailsForReccuringPayment(details, order);
-                        
+
                     }
                     //recurring orders
                     if (details.IsRecurringShoppingCart && !processPaymentRequest.IsRecurringPayment)
@@ -1721,7 +1744,6 @@ namespace Grand.Services.Orders
                             -details.RedeemedRewardPoints, order.StoreId,
                             string.Format(_localizationService.GetResource("RewardPoints.Message.RedeemedForOrder", order.CustomerLanguageId), order.OrderNumber),
                             order.Id, details.RedeemedRewardPointsAmount);
-                        order.RewardPointsWereAdded = true;
                         order.RedeemedRewardPointsEntry = rph;
                         await _orderService.UpdateOrder(order);
                     }

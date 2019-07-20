@@ -458,6 +458,8 @@ namespace Grand.Services.Catalog
                 .Set(x => x.WarehouseId, product.WarehouseId)
                 .Set(x => x.Weight, product.Weight)
                 .Set(x => x.Width, product.Width)
+                .Set(x => x.RewardPoints, product.RewardPoints)
+                .Set(x => x.AllowToEarnRewardPoints, product.AllowToEarnRewardPoints)
                 .CurrentDate("UpdatedOnUtc");
 
             await _productRepository.Collection.UpdateOneAsync(filter, update);
@@ -1050,7 +1052,7 @@ namespace Grand.Services.Catalog
                            where
                            p.ManageInventoryMethodId == (int)ManageInventoryMethod.ManageStockByAttributes &&
                            (vendorId == "" || p.VendorId == vendorId) &&
-                           (storeId == "" || p.Stores.Contains(storeId)) 
+                           (storeId == "" || p.Stores.Contains(storeId))
                            from c in p.ProductAttributeCombinations
                            select new ProductAttributeCombination() {
                                ProductId = p.Id,

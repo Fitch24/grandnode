@@ -48,6 +48,10 @@ namespace Grand.Web.Areas.Admin.Models.Settings
         [GrandResourceDisplayName("Admin.Configuration.Settings.RewardPoints.PointsAccumulatedForAllStores")]
         public bool PointsAccumulatedForAllStores { get; set; }
 
+        [GrandResourceDisplayName("Admin.Configuration.Settings.RewardPoints.AwardForAllPurchases")]
+        public bool AwardForAllPurchases { get; set; }
+        public bool AwardForAllPurchases_OverrideForStore { get; set; }
+
 
     }
 }

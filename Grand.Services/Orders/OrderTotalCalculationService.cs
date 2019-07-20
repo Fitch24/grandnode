@@ -138,8 +138,7 @@ namespace Grand.Services.Orders
                         discount.DiscountType == DiscountType.AssignedToOrderSubTotal &&
                         !allowedDiscounts.Where(x => x.DiscountId == discount.Id).Any())
                     {
-                        allowedDiscounts.Add(new AppliedDiscount
-                        {
+                        allowedDiscounts.Add(new AppliedDiscount {
                             DiscountId = discount.Id,
                             IsCumulative = discount.IsCumulative,
                             CouponCode = validDiscount.CouponCode,
@@ -181,8 +180,7 @@ namespace Grand.Services.Orders
                         discount.DiscountType == DiscountType.AssignedToShipping &&
                         !allowedDiscounts.Where(x => x.DiscountId == discount.Id).Any())
                     {
-                        allowedDiscounts.Add(new AppliedDiscount
-                        {
+                        allowedDiscounts.Add(new AppliedDiscount {
                             DiscountId = discount.Id,
                             IsCumulative = discount.IsCumulative,
                             CouponCode = validDiscount.CouponCode,
@@ -229,8 +227,7 @@ namespace Grand.Services.Orders
                                discount.DiscountType == DiscountType.AssignedToOrderTotal &&
                                !allowedDiscounts.Where(x => x.DiscountId == discount.Id).Any())
                     {
-                        allowedDiscounts.Add(new AppliedDiscount
-                        {
+                        allowedDiscounts.Add(new AppliedDiscount {
                             DiscountId = discount.Id,
                             IsCumulative = discount.IsCumulative,
                             CouponCode = validDiscount.CouponCode,
@@ -898,8 +895,7 @@ namespace Grand.Services.Orders
                             //reduce subtotal
                             resultTemp -= amountCanBeUsed;
 
-                            var appliedGiftCard = new AppliedGiftCard
-                            {
+                            var appliedGiftCard = new AppliedGiftCard {
                                 GiftCard = gc,
                                 AmountCanBeUsed = amountCanBeUsed
                             };
@@ -1028,6 +1024,34 @@ namespace Grand.Services.Orders
                 return 0;
 
             var points = (int)Math.Truncate(amount / _rewardPointsSettings.PointsForPurchases_Amount * _rewardPointsSettings.PointsForPurchases_Points);
+            return points;
+        }
+
+        /// <summary>
+        /// Calculate how much reward points will be earned/reduced based on products in a shopping cart
+        /// (if "Award for all purchases" not checked in reward points settings)
+        /// </summary>
+        /// <param name="customer">Customer</param>
+        /// <param name="cart">Shopping cart dictionary where "Key" is ProductId and "Value" is Quantity</param>
+        /// <returns>Number of reward points</returns>
+        public async virtual Task<int> CalculateRewardPoints(Customer customer, IDictionary<string, int> cart)
+        {
+            if (!_rewardPointsSettings.Enabled)
+                return 0;
+
+            if (_rewardPointsSettings.AwardForAllPurchases)
+                return 0;
+            if (customer == null || customer.IsGuest())
+                return 0;
+            var points = 0;
+            foreach (var item in cart)
+            {
+                //gets product one by one because GetProductById can get product from cache
+                //and GetProductByIds can get products only from Db
+                var product = await _productService.GetProductById(item.Key);
+                if (product.AllowToEarnRewardPoints)
+                    points += product.RewardPoints * item.Value;
+            }
             return points;
         }
 
