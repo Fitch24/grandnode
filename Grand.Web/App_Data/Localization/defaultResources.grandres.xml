@@ -20167,13 +20167,22 @@
     <Value>Message content</Value>
   </LocaleResource>
   
-  <LocaleResource Name="Admin.Catalog.Product.Fields.RewardPoints">
-    <Value>Reward Points</Value>
-  </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Product.Fields.AllowToEarnRewardPoints">
-    <Value>Allow earning Reward Points</Value>
+    <Value>Allow to earn reward points</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Product.Fields.AllowToEarnRewardPoints.Hint">
+    <Value>Allow customers to earn reward points for purchasing this product. WARNING: "Award for all purchases" in reward points settings will override this option.</Value>
+  <LocaleResource Name="Admin.Catalog.Product.Fields.RewardPoints">
+    <Value>Reward points</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Product.Fields.RewardPoints.Hint">
+    <Value>A value of earned reward points for purchasing this product. WARNING: "Award for all purchases" in reward points settings will override this option.</Value>
+  </LocaleResource>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.RewardPoints.AwardForAllPurchases">
     <Value>Award for all purchases</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.RewardPoints.AwardForAllPurchases.Hint">
+    <Value>If checked the reward points will be earned for each purchase (based on spend money amount). Otherwise reward points will be earned only for specific products (based on product properties).</Value>
   </LocaleResource>
 </Language>
